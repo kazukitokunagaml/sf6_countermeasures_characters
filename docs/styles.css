@@ -82,6 +82,70 @@ body.obs-mode .panel {
   line-height: 1.6;
 }
 
+/* ── 対策フォルダ ── */
+.folder-section {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.folder-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.folder-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.folder-name {
+  font-size: 14px;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.folder-name.muted {
+  color: var(--muted);
+}
+
+.folder-name.folder-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.folder-warning {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 159, 159, 0.08);
+  border: 1px solid rgba(255, 159, 159, 0.25);
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.folder-hint {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  text-align: left;
+}
+
+.folder-hint code {
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
 .worker-status {
   margin-bottom: 20px;
 }

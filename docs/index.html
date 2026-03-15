@@ -17,11 +17,33 @@
           「スタート」を押すとゲーム画面を共有して、相手キャラを自動検出します。
         </p>
 
+        <!-- OCR 読み込みプログレス -->
         <div id="worker-status" class="worker-status">
           <div class="worker-bar-wrap">
             <div id="worker-bar" class="worker-bar" style="width:0%"></div>
           </div>
           <div id="worker-label" class="worker-label">OCR エンジンを読み込み中...</div>
+        </div>
+
+        <!-- 対策フォルダ設定 -->
+        <div class="folder-section">
+          <div class="folder-row">
+            <div class="folder-info">
+              <div class="label">対策メモフォルダ</div>
+              <div id="setup-folder-name" class="folder-name muted">未設定（内蔵データを使用）</div>
+            </div>
+            <div class="inline-actions">
+              <button id="select-folder-btn" class="ghost-button" type="button">フォルダを選択</button>
+              <button id="download-defaults-btn" class="ghost-button" type="button">デフォルトをDL</button>
+            </div>
+          </div>
+          <div id="folder-api-warning" class="folder-warning hidden">
+            ⚠ このブラウザはフォルダ選択に対応していません（Chrome / Edge をお使いください）
+          </div>
+          <div class="folder-hint">
+            初めて使う方：「デフォルトをDL」でサンプルファイルをダウンロード → 解凍 → 「フォルダを選択」で指定してください。<br />
+            フォルダ内の <code>.md</code> ファイルを直接編集することで対策メモを自由にカスタマイズできます。
+          </div>
         </div>
 
         <button id="start-btn" class="primary-button" disabled>読み込み中...</button>
@@ -71,6 +93,18 @@
           </div>
         </div>
 
+        <!-- 対策フォルダ（設定パネル内） -->
+        <div class="section-head compact">
+          <div class="folder-info">
+            <div class="label">対策メモフォルダ</div>
+            <div id="settings-folder-name" class="folder-name muted">未設定（内蔵データを使用）</div>
+          </div>
+          <div class="inline-actions">
+            <button class="ghost-button" id="change-folder-btn" type="button">変更</button>
+            <button class="ghost-button" id="reload-folder-btn" type="button">再読込</button>
+          </div>
+        </div>
+
         <div class="config-grid">
           <label>
             <span>自キャラ</span>
@@ -93,7 +127,7 @@
         <div class="section-head compact">
           <div>
             <div class="label">キャプチャ範囲</div>
-            <div class="value small" id="video-info" style="font-size:12px;color:var(--muted)">映像サイズ: 未取得</div>
+            <div id="video-info" style="font-size:12px;color:var(--muted)">映像サイズ: 未取得</div>
           </div>
         </div>
         <div class="config-grid region-grid">
@@ -125,6 +159,7 @@
 
     <script src="matchups.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3/dist/jszip.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
