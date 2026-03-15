@@ -1,0 +1,50 @@
+# -*- mode: python ; coding: utf-8 -*-
+
+from pathlib import Path
+
+
+root = Path.cwd()
+datas = [
+    (str(root / "対策.md"), "."),
+    (str(root / "config.json"), "."),
+    (str(root / "templates"), "templates"),
+]
+
+hiddenimports = ["PySide6.QtCore", "PySide6.QtGui", "PySide6.QtWidgets"]
+
+
+a = Analysis(
+    ["desktop_overlay.py"],
+    pathex=[str(root)],
+    binaries=[],
+    datas=datas,
+    hiddenimports=hiddenimports,
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name="sf6_overlay",
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)

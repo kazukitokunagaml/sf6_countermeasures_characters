@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SF6 Matchup Overlay</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="overlay">
+      <section class="panel">
+        <div class="eyebrow">SF6 Matchup Overlay</div>
+        <div class="row">
+          <div>
+            <div class="label">自キャラ</div>
+            <div class="value" id="self-character">-</div>
+          </div>
+          <div>
+            <div class="label">相手キャラ</div>
+            <div class="value accent" id="opponent">認識待ち</div>
+          </div>
+          <div>
+            <div class="label">信頼度</div>
+            <div class="value" id="confidence">0.000</div>
+          </div>
+        </div>
+        <div class="status" id="status"></div>
+        <ul class="notes" id="notes"></ul>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
