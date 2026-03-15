@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SF6 Matchup Overlay</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ── セットアップ画面 ── -->
+    <div id="setup-screen" class="screen">
+      <div class="setup-card panel">
+        <div class="eyebrow">SF6 Matchup Overlay</div>
+        <h1 class="setup-title">対策メモ オーバーレイ</h1>
+        <p class="setup-desc">
+          ブラウザだけで動作します。インストール不要。<br />
+          「スタート」を押すとゲーム画面を共有して、相手キャラを自動検出します。
+        </p>
+
+        <div id="worker-status" class="worker-status">
+          <div class="worker-bar-wrap">
+            <div id="worker-bar" class="worker-bar" style="width:0%"></div>
+          </div>
+          <div id="worker-label" class="worker-label">OCR エンジンを読み込み中...</div>
+        </div>
+
+        <button id="start-btn" class="primary-button" disabled>読み込み中...</button>
+        <p class="setup-note">
+          ※ 画面共有の許可ダイアログが表示されます。ゲーム画面またはモニター全体を選択してください。
+        </p>
+      </div>
+    </div>
+
+    <!-- ── メインオーバーレイ ── -->
+    <main id="overlay-screen" class="screen hidden overlay">
+      <!-- ヒーローパネル：キャラ情報 + 対策メモ -->
+      <section class="panel hero">
+        <div class="eyebrow">SF6 Matchup Overlay</div>
+        <div class="row">
+          <div>
+            <div class="label">自キャラ</div>
+            <div class="value" id="self-character">-</div>
+          </div>
+          <div>
+            <div class="label">相手キャラ</div>
+            <div class="value accent" id="opponent">認識待ち</div>
+          </div>
+          <div>
+            <div class="label">信頼度</div>
+            <div class="value" id="confidence">-</div>
+          </div>
+          <div>
+            <div class="label">状態</div>
+            <div class="value small" id="status">-</div>
+          </div>
+        </div>
+        <ul class="notes" id="notes"></ul>
+      </section>
+
+      <!-- 設定パネル（OBSモード時は非表示） -->
+      <section class="panel controls">
+        <div class="section-head">
+          <div>
+            <div class="label">設定</div>
+            <div class="value small">キャプチャ範囲 / 表示</div>
+          </div>
+          <div class="inline-actions">
+            <button class="ghost-button" id="save-settings" type="button">保存</button>
+            <button class="ghost-button" id="preview-btn" type="button">プレビュー</button>
+            <button class="ghost-button danger" id="stop-btn" type="button">停止</button>
+          </div>
+        </div>
+
+        <div class="config-grid">
+          <label>
+            <span>自キャラ</span>
+            <input id="self-character-input" type="text" placeholder="LUKE" />
+          </label>
+          <label>
+            <span>更新間隔（秒）</span>
+            <input id="poll-seconds" type="number" min="0.5" step="0.5" value="1.5" />
+          </label>
+          <label>
+            <span>最小信頼度</span>
+            <input id="min-confidence" type="number" min="0" max="1" step="0.05" value="0.35" />
+          </label>
+          <label class="checkbox">
+            <input id="obs-mode" type="checkbox" />
+            <span>OBS モード（設定を隠す）</span>
+          </label>
+        </div>
+
+        <div class="section-head compact">
+          <div>
+            <div class="label">キャプチャ範囲</div>
+            <div class="value small" id="video-info" style="font-size:12px;color:var(--muted)">映像サイズ: 未取得</div>
+          </div>
+        </div>
+        <div class="config-grid region-grid">
+          <label><span>left</span><input id="region-left" type="number" value="1320" /></label>
+          <label><span>top</span><input id="region-top" type="number" value="40" /></label>
+          <label><span>width</span><input id="region-width" type="number" min="1" value="520" /></label>
+          <label><span>height</span><input id="region-height" type="number" min="1" value="180" /></label>
+        </div>
+
+        <div id="preview-container" class="preview-wrap hidden">
+          <canvas id="preview-canvas"></canvas>
+        </div>
+
+        <div class="debug-grid" style="margin-top:14px">
+          <div class="debug-card">
+            <div class="label">OCR テキスト（生）</div>
+            <pre id="ocr-text" class="code-block">-</pre>
+          </div>
+          <div class="debug-card">
+            <div class="label">検出ログ</div>
+            <pre id="detect-log" class="code-block">-</pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 非表示の video 要素（画面キャプチャ用） -->
+    <video id="capture-video" style="display:none" muted playsinline></video>
+
+    <script src="matchups.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
