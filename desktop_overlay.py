@@ -8,7 +8,7 @@ from typing import Any
 
 from app import (
     CONFIG_PATH,
-    DOC_PATH,
+    MATCHUPS_DIR,
     STATE_PATH,
     MatchupNote,
     load_config,
@@ -30,6 +30,7 @@ def run_desktop_overlay() -> None:
         def __init__(self, config: dict[str, Any]) -> None:
             super().__init__()
             self.config = config
+            self.click_through = bool(config.get("overlay_click_through", False))
             self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
             self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
             self.setWindowFlags(
@@ -75,6 +76,12 @@ def run_desktop_overlay() -> None:
             self.status_label.setStyleSheet("color: #AAB6C8;")
             layout.addWidget(self.status_label)
 
+            self.debug_label = QLabel("")
+            self.debug_label.setWordWrap(True)
+            self.debug_label.setFont(QFont("Consolas", 10))
+            self.debug_label.setStyleSheet("color: #8FA7C7;")
+            layout.addWidget(self.debug_label)
+
             self.notes_label = QLabel("")
             self.notes_label.setWordWrap(True)
             self.notes_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
@@ -114,6 +121,7 @@ def run_desktop_overlay() -> None:
             WS_EX_NOACTIVATE = 0x08000000
             WS_EX_TOOLWINDOW = 0x00000080
             WS_EX_TOPMOST = 0x00000008
+            WS_EX_TRANSPARENT = 0x00000020
             SWP_NOMOVE = 0x0002
             SWP_NOSIZE = 0x0001
             SWP_NOACTIVATE = 0x0010
@@ -123,6 +131,10 @@ def run_desktop_overlay() -> None:
             user32 = ctypes.windll.user32
             current = user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
             updated = current | WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST
+            if self.click_through:
+                updated |= WS_EX_TRANSPARENT
+            else:
+                updated &= ~WS_EX_TRANSPARENT
             user32.SetWindowLongW(hwnd, GWL_EXSTYLE, updated)
             user32.SetWindowPos(
                 hwnd,
@@ -134,13 +146,28 @@ def run_desktop_overlay() -> None:
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED,
             )
 
+        def keyPressEvent(self, event) -> None:  # type: ignore[override]
+            if event.key() == Qt.Key.Key_F8:
+                self.click_through = not self.click_through
+                self.config["overlay_click_through"] = self.click_through
+                CONFIG_PATH.write_text(json.dumps(self.config, ensure_ascii=False, indent=2), encoding="utf-8")
+                self.apply_no_activate_style()
+                self.refresh_state()
+                return
+            super().keyPressEvent(event)
+
         def refresh_state(self) -> None:
             if not STATE_PATH.exists():
                 return
             state = json.loads(STATE_PATH.read_text(encoding="utf-8"))
             self.self_label.setText(f"自キャラ: {state.get('self_character') or '-'}")
+            phase = state.get("phase") or "-"
             self.opponent_label.setText(f"相手: {state.get('opponent') or '認識待ち'}")
             self.status_label.setText(state.get("status") or "")
+            confidence = state.get("confidence", 0.0)
+            self.debug_label.setText(
+                f"phase={phase} confidence={confidence:.3f} click_through={'on' if self.click_through else 'off'} F8 toggle"
+            )
 
             notes = state.get("notes") or []
             lines = [f"・{note}" for note in notes]
@@ -150,7 +177,7 @@ def run_desktop_overlay() -> None:
     app.setQuitOnLastWindowClosed(True)
 
     config = load_config(CONFIG_PATH)
-    notes: dict[str, MatchupNote] = parse_matchup_notes(DOC_PATH)
+    notes: dict[str, MatchupNote] = parse_matchup_notes(MATCHUPS_DIR)
     watcher = threading.Thread(target=watch_match, args=(config, notes), daemon=True)
     watcher.start()
 

@@ -5,7 +5,7 @@ from pathlib import Path
 
 root = Path.cwd()
 datas = [
-    (str(root / "対策.md"), "."),
+    (str(root / "matchups"), "matchups"),
     (str(root / "config.json"), "."),
     (str(root / "templates"), "templates"),
 ]

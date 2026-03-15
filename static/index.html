@@ -8,7 +8,7 @@
   </head>
   <body>
     <main class="overlay">
-      <section class="panel">
+      <section class="panel hero">
         <div class="eyebrow">SF6 Matchup Overlay</div>
         <div class="row">
           <div>
@@ -23,9 +23,104 @@
             <div class="label">信頼度</div>
             <div class="value" id="confidence">0.000</div>
           </div>
+          <div>
+            <div class="label">フェーズ</div>
+            <div class="value small" id="phase">-</div>
+          </div>
         </div>
         <div class="status" id="status"></div>
         <ul class="notes" id="notes"></ul>
+      </section>
+
+      <section class="panel controls">
+        <div class="section-head">
+          <div>
+            <div class="label">設定</div>
+            <div class="value small">capture region / OCR / OBS</div>
+          </div>
+          <div class="inline-actions">
+            <button class="ghost-button" id="save-config" type="button">保存</button>
+            <button class="ghost-button" id="preview-capture" type="button">現在位置を確認</button>
+          </div>
+        </div>
+
+        <div class="config-grid">
+          <label>
+            <span>自キャラ</span>
+            <input id="self-character-input" type="text">
+          </label>
+          <label>
+            <span>最小信頼度</span>
+            <input id="min-confidence-input" type="number" min="0" max="1" step="0.01">
+          </label>
+          <label>
+            <span>更新秒数</span>
+            <input id="poll-seconds-input" type="number" min="0.1" step="0.05">
+          </label>
+          <label>
+            <span>OCR 重み</span>
+            <input id="ocr-weight-input" type="number" min="0" max="1" step="0.05">
+          </label>
+          <label class="checkbox">
+            <input id="ocr-enabled-input" type="checkbox">
+            <span>OCR を併用</span>
+          </label>
+          <label class="checkbox">
+            <input id="debug-save-images-input" type="checkbox">
+            <span>デバッグ画像を保存</span>
+          </label>
+          <label class="checkbox">
+            <input id="obs-mode-input" type="checkbox">
+            <span>OBS 表示モード</span>
+          </label>
+        </div>
+
+        <div class="section-head compact">
+          <div>
+            <div class="label">認識フェーズ</div>
+            <div class="templates-summary" id="regions-summary">読み込み中</div>
+          </div>
+          <button class="ghost-button" id="add-region" type="button">フェーズ追加</button>
+        </div>
+        <div class="regions-list" id="regions-list"></div>
+        <div class="preview-wrap hidden" id="preview-wrap">
+          <img id="preview-image" alt="capture preview">
+        </div>
+      </section>
+
+      <section class="panel debug-panel">
+        <div class="section-head">
+          <div>
+            <div class="label">デバッグ</div>
+            <div class="value small">OCR / 候補 / 保存画像</div>
+          </div>
+        </div>
+        <div class="debug-grid">
+          <div class="debug-card">
+            <div class="label">OCR</div>
+            <pre class="code-block" id="ocr-debug">-</pre>
+          </div>
+          <div class="debug-card">
+            <div class="label">候補</div>
+            <pre class="code-block" id="candidate-debug">-</pre>
+          </div>
+          <div class="debug-card">
+            <div class="label">リージョン</div>
+            <pre class="code-block" id="region-debug">-</pre>
+          </div>
+        </div>
+        <div class="image-strip" id="debug-images"></div>
+      </section>
+
+      <section class="panel">
+        <div class="templates-header">
+          <div>
+            <div class="label">テンプレート管理</div>
+            <div class="templates-summary" id="templates-summary">読み込み中</div>
+          </div>
+          <button class="ghost-button" id="templates-refresh" type="button">再読込</button>
+        </div>
+        <div class="templates-list" id="templates-list"></div>
       </section>
     </main>
     <script src="/static/app.js"></script>
